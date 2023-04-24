@@ -30,7 +30,7 @@ then
   aws ecs register-task-definition --cli-input-json fileb://task_definition.json
 fi
 
-cluster="$(jq '.params.cluster' < "${payload}")"
+cluster="$(jq '.params.cluster_arn' < "${payload}")"
 service="$(jq '.params.service' < "${payload}")"
 if [ ! -z "$cluster" ] && [ ! -z "$service" ]
 then
