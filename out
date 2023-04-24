@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -e
+
+cd "${1}"
+
+exec 3>&1
+exec 1>&2
+set +x
+# for jq
+PATH=/usr/local/bin:$PATH
+
+payload=$(mktemp /tmp/resource-in.XXXXXX)
+
+cat > "${payload}" <&0
+
+timestamp="$(jq -n "{version:{timestamp:\"$(date +%s)\"}}")"
+aws_access_key_id="$(jq -r '.source.aws_access_key_id' < "${payload}")"
+aws_secret_access_key="$(jq -r '.source.aws_secret_access_key' < "${payload}")"
+aws_region="$(jq -r '.source.aws_region' < "${payload}")"
+
+aws configure set aws_access_key_id $aws_access_key_id
+aws configure set aws_secret_access_key $aws_secret_access_key
+aws configure set default.region $aws_region
+
+task_definition_json="$(jq '.params."task_definition.json"' < "${payload}" | jq 'del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)')"
+if [ ! -z "$task_definition_json" ]
+then
+  echo $task_definition_json > task_definition.json
+  aws ecs register-task-definition --cli-input-json fileb://task_definition.json)
+fi
+
+metadata="$(cat <<EOF
+  {
+    "metadata": [
+      {"key": "hoge", "value": "hoge"}
+    ]
+  }
+EOF
+)"
+
+debug_info=""
+
+echo "$timestamp $metadata $debug_info " | jq -s add  >&3
