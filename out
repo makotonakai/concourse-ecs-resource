@@ -38,6 +38,7 @@ then
   echo $cluster
   echo $service
   echo $family
+  echo "$(aws --version)"
   aws ecs update-service --cluster $cluster --service $service --task-definition $family 
 fi
 
