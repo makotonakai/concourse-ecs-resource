@@ -31,7 +31,7 @@ then
 fi
 
 service="$(jq '.params.service' < "${payload}")"
-task_definition="$(jq '.params."task_definition"' < "${payload}")"
+task_definition="$(jq '.params.task_definition' < "${payload}")"
 if [ ! -z "$service" ] && [ ! -z "$task_definition" ]
 then
   aws ecs update-service --service $service --task-definition $task_definition
