@@ -39,7 +39,7 @@ then
   echo $service
   echo $family
   echo "$(aws --version)"
-  aws ecs update-service --cluster $cluster --service $service --task-definition $family 
+  aws ecs update-service --cluster $cluster --service $service --task-definition $family --debug
 fi
 
 metadata="$(cat <<EOF
