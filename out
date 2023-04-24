@@ -30,11 +30,12 @@ then
   aws ecs register-task-definition --cli-input-json fileb://task_definition.json
 fi
 
+cluster="$(jq '.params.cluster' < "${payload}")"
 service="$(jq '.params.service' < "${payload}")"
-if [ ! -z "$service" ]
+if [ ! -z "$cluster" ] && [ ! -z "$service" ]
 then
   family="$(jq '.family' task_definition.json)" 
-  aws ecs update-service --service $service --task-definition $family
+  aws ecs update-service --cluster $cluster --service $service --task-definition $family
 fi
 
 metadata="$(cat <<EOF
