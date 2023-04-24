@@ -31,9 +31,11 @@ then
 fi
 
 service="$(jq '.params.service' < "${payload}")"
-task_definition="$(jq '.params.task_definition' < "${payload}")"
 if [ ! -z "$service" ] && [ ! -z "$task_definition" ]
 then
+  family="$(jq '.family' task_definition.json)"
+  aws ecs list-task-definitions --family-prefix $family > list-task-definitions.json
+  task_definition="$(jq '.taskDefinitionArns' list-task-definitions.json)"
   aws ecs update-service --service $service --task-definition $task_definition
 fi
 
