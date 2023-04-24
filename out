@@ -35,7 +35,7 @@ service="$(jq '.params.service' < "${payload}")"
 if [ ! -z "$cluster" ] && [ ! -z "$service" ]
 then
   family="$(jq '.family' task_definition.json | tr -d '"')" 
-  aws ecs update-service --Cluster $cluster --service $service --task-definition $family 
+  aws ecs update-service --cluster $cluster --service $service --task-definition $family 
 fi
 
 metadata="$(cat <<EOF
