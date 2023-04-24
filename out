@@ -30,6 +30,13 @@ then
   aws ecs register-task-definition --cli-input-json fileb://task_definition.json
 fi
 
+service="$(jq '.params.service' < "${payload}")"
+task_definition="$(jq '.params."task_definition"' < "${payload}")"
+if [ ! -z "$task_definition" ] && [ ! -z "$service" ]
+then
+  aws ecs update-service --service $service --task-definition $task_definition
+fi
+
 metadata="$(cat <<EOF
   {
     "metadata": [
