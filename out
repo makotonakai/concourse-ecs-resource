@@ -27,7 +27,7 @@ task_definition_json="$(jq '.params."task_definition.json"' < "${payload}" | jq 
 if [ ! -z "$task_definition_json" ]
 then
   echo $task_definition_json > task_definition.json
-  aws ecs register-task-definition --cli-input-json fileb://task_definition.json)
+  aws ecs register-task-definition --cli-input-json fileb://task_definition.json
 fi
 
 metadata="$(cat <<EOF
