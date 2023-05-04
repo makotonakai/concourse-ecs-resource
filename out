@@ -23,7 +23,7 @@ aws configure set aws_access_key_id $aws_access_key_id
 aws configure set aws_secret_access_key $aws_secret_access_key
 aws configure set default.region $aws_region
 
-task_definition_json="$(jq '.params."task_definition.json"' < "${payload}" | jq 'del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)')"
+task_definition_json="$(jq -r '.params."task_definition.json"' < "${payload}" | jq 'del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)')"
 if [ ! -z "$task_definition_json" ]
 then
   echo $task_definition_json > task_definition.json
